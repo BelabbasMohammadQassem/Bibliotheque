@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la Catégorie : {{ category.name }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="my-4">{{ category.name }}</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Livres dans cette catégorie</h5>
+            <ul class="list-group">
+                {% for book in category.books %}
+                    <li class="list-group-item">
+                        <a href="{{ path('book_detail', {id: book.id}) }}">{{ book.title }}</a>
+                        ({{ book.publicationYear }})
+                    </li>
+                {% else %}
+                    <li class="list-group-item">Aucun livre dans cette catégorie</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

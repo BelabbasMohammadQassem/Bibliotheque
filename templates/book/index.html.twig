@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Livres{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="my-4">Nos Livres</h1>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for book in books %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ book.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            Année : {{ book.publicationYear }}
+                        </h6>
+                        <p class="card-text">
+                            ISBN : {{ book.isbn }}
+                        </p>
+                        <p class="card-text">
+                            Auteurs : 
+                            {% for author in book.authors %}
+                                {{ author.name }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p class="card-text">
+                            Catégories : 
+                            {% for category in book.categories %}
+                                <span class="badge bg-secondary">{{ category.name }}</span>
+                            {% endfor %}
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ path('book_detail', {id: book.id}) }}" class="btn btn-primary">Détails</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">Aucun livre trouvé.</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

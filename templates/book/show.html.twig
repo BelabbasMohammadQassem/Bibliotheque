@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du livre : {{ book.title }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="my-4">{{ book.title }}</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Informations du livre</h5>
+            <p><strong>Titre :</strong> {{ book.title }}</p>
+            <p><strong>Année de publication :</strong> {{ book.publicationYear }}</p>
+            <p><strong>ISBN :</strong> {{ book.isbn }}</p>
+            
+            <h6>Auteurs</h6>
+            <ul>
+                {% for author in book.authors %}
+                    <li>{{ author.name }}</li>
+                {% endfor %}
+            </ul>
+            
+            <h6>Catégories</h6>
+            <div>
+                {% for category in book.categories %}
+                    <span class="badge bg-secondary">{{ category.name }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
