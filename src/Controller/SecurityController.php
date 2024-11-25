@@ -1,78 +1,26 @@
 <?php
+
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\RegistrationType;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/login', name: 'app_login')]
+    #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // Si l'utilisateur est déjà connecté, redirigez-le vers la page d'accueil
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_home');
-        }
-
+        // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
+
+        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-    
+
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
-        ]);
-    }
-
-    #[Route('/register', name: 'app_register')]
-    public function register(
-        Request $request, 
-        UserPasswordHasherInterface $passwordHasher, 
-        EntityManagerInterface $entityManager
-    ): Response {
-        // Si l'utilisateur est déjà connecté, redirigez-le vers la page d'accueil
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_home');
-        }
-
-        $user = new User();
-        $form = $this->createForm(RegistrationType::class, $user);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Vérifiez si l'email existe déjà
-            $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
-            if ($existingUser) {
-                $this->addFlash('error', 'Un compte avec cet email existe déjà');
-                return $this->redirectToRoute('app_register');
-            }
-
-            $hashedPassword = $passwordHasher->hashPassword(
-                $user,
-                $form->get('password')->getData()
-            );
-            $user->setPassword($hashedPassword);
-            $user->setRoles(['ROLE_USER']);
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            // Message flash de succès
-            $this->addFlash('success', 'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.');
-
-            return $this->redirectToRoute('app_login');
-        }
-
-        return $this->render('security/register.html.twig', [
-            'form' => $form->createView()
         ]);
     }
 

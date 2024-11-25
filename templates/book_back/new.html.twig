@@ -1,11 +1,58 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Book{% endblock %}
+{% block title %}Create New Book{% endblock %}
 
 {% block body %}
-    <h1>Create new Book</h1>
+{% if is_granted('ROLE_ADMIN') %}
 
-    {{ include('book_back/_form.html.twig') }}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Create New Book</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.title, 'Title', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                        </div>
 
-    <a href="{{ path('app_book_back_index') }}">back to list</a>
+                        <div class="mb-3">
+                            {{ form_label(form.publicationYear, 'Publication year', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.publicationYear, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.isbn, 'ISBN', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.isbn, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.authors, 'Authors', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.authors, {'attr': {'class': 'form-select'}}) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.categories, 'Categories', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.categories, {'attr': {'class': 'form-select'}}) }}
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary w-100">Save</button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{{ path('app_book_back_index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}

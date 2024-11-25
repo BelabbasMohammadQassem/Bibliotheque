@@ -15,7 +15,6 @@ class AuthorType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('biography')
             ->add('books', EntityType::class, [
                 'class' => Book::class,
                 'choice_label' => 'id',

@@ -18,7 +18,7 @@ class Author
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $biography = null;
 
     #[ORM\ManyToMany(targetEntity: Book::class, mappedBy: 'authors')]
