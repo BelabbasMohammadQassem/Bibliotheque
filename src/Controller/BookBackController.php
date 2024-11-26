@@ -70,8 +70,21 @@ final class BookBackController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Récupérer les chaînes d'auteurs et de catégories
+            $authorsString = $form->get('authorsString')->getData();
+            $categoriesString = $form->get('categoriesString')->getData();
+            // Réinitialiser les auteurs et catégories existants
+            foreach ($book->getAuthors() as $author) {
+                $book->removeAuthor($author);
+            }
+            foreach ($book->getCategories() as $category) {
+                $book->removeCategory($category);
+            }
+            // Traiter les chaînes d'auteurs et de catégories
+            $this->processAuthorsAndCategories($book, $authorsString, $categoriesString, $entityManager);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Le livre a été modifié avec succès.');
             return $this->redirectToRoute('app_book_back_index', [], Response::HTTP_SEE_OTHER);
         }
 
