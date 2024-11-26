@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Book;
@@ -7,19 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/books')]
 class BookController extends AbstractController
 {
-
-    #[Route('/books/home', name: 'app_book_home')]  // Changez 'app_book' en 'app_home'
-    public function home(EntityManagerInterface $entityManager): Response
-    {
-        $books = $entityManager->getRepository(Book::class)->findAll();
-        
-        return $this->render('book/index.html.twig', [
-            'books' => $books
-        ]);
-    }   
     #[Route('/book/list', name: 'app_book_list')]
     public function index(EntityManagerInterface $entityManager): Response
     {

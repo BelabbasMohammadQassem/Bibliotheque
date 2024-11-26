@@ -30,13 +30,31 @@
                         </div>
 
                         <div class="mb-3">
-                            {{ form_label(form.authors, 'Authors', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.authors, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_label(form.authorsString, 'Authors', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.authorsString, {'attr': {'class': 'form-control', 'placeholder': 'Enter author IDs separated by comma'}}) }}
+                            
+                            <small class="text-muted">Available Authors:</small>
+                            <div class="list-group">
+                                {% for author in authors %}
+                                    <span class="list-group-item list-group-item-action">
+                                        ID: {{ author.id }} - {{ author.name }}
+                                    </span>
+                                {% endfor %}
+                            </div>
                         </div>
 
                         <div class="mb-3">
-                            {{ form_label(form.categories, 'Categories', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.categories, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_label(form.categoriesString, 'Categories', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.categoriesString, {'attr': {'class': 'form-control', 'placeholder': 'Enter category IDs separated by comma'}}) }}
+                            
+                            <small class="text-muted">Available Categories:</small>
+                            <div class="list-group">
+                                {% for category in categories %}
+                                    <span class="list-group-item list-group-item-action">
+                                        ID: {{ category.id }} - {{ category.name }}
+                                    </span>
+                                {% endfor %}
+                            </div>
                         </div>
 
                         <div class="text-center">

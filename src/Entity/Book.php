@@ -24,10 +24,16 @@ class Book
     private ?string $isbn = null;
 
     #[ORM\ManyToMany(targetEntity: Author::class, inversedBy: 'books')]
+    #[ORM\JoinTable(name: 'book_author')]
     private Collection $authors;
 
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'books')]
+    #[ORM\JoinTable(name: 'book_category')]
     private Collection $categories;
+
+    // Ajout des propriétés transientes
+    private ?string $authorsString = null;
+    private ?string $categoriesString = null;
 
     public function __construct()
     {
@@ -35,6 +41,38 @@ class Book
         $this->categories = new ArrayCollection();
     }
 
+    // Getters et setters pour les propriétés transientes
+    public function getAuthorsString(): ?string
+    {
+        // Si aucune valeur n'est définie, générer à partir des auteurs existants
+        if (null === $this->authorsString && !$this->authors->isEmpty()) {
+            $this->authorsString = implode(', ', $this->authors->map(fn(Author $author) => $author->getName())->toArray());
+        }
+        return $this->authorsString;
+    }
+
+    public function setAuthorsString(?string $authorsString): self
+    {
+        $this->authorsString = $authorsString;
+        return $this;
+    }
+
+    public function getCategoriesString(): ?string
+    {
+        // Si aucune valeur n'est définie, générer à partir des catégories existantes
+        if (null === $this->categoriesString && !$this->categories->isEmpty()) {
+            $this->categoriesString = implode(', ', $this->categories->map(fn(Category $category) => $category->getName())->toArray());
+        }
+        return $this->categoriesString;
+    }
+
+    public function setCategoriesString(?string $categoriesString): self
+    {
+        $this->categoriesString = $categoriesString;
+        return $this;
+    }
+
+    // Toutes les autres méthodes restent identiques à votre version originale
     public function getId(): ?int
     {
         return $this->id;
@@ -45,10 +83,9 @@ class Book
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(string $title): self
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -57,10 +94,9 @@ class Book
         return $this->publicationYear;
     }
 
-    public function setPublicationYear(int $publicationYear): static
+    public function setPublicationYear(int $publicationYear): self
     {
         $this->publicationYear = $publicationYear;
-
         return $this;
     }
 
@@ -69,10 +105,9 @@ class Book
         return $this->isbn;
     }
 
-    public function setIsbn(string $isbn): static
+    public function setIsbn(string $isbn): self
     {
         $this->isbn = $isbn;
-
         return $this;
     }
 
@@ -84,18 +119,21 @@ class Book
         return $this->authors;
     }
 
-    public function addAuthor(Author $author): static
+    public function addAuthor(Author $author): self
     {
         if (!$this->authors->contains($author)) {
             $this->authors->add($author);
+            $author->addBook($this); // Ajout de la relation bidirectionnelle
         }
 
         return $this;
     }
 
-    public function removeAuthor(Author $author): static
+    public function removeAuthor(Author $author): self
     {
-        $this->authors->removeElement($author);
+        if ($this->authors->removeElement($author)) {
+            $author->removeBook($this); // Suppression de la relation bidirectionnelle
+        }
 
         return $this;
     }
@@ -108,18 +146,21 @@ class Book
         return $this->categories;
     }
 
-    public function addCategory(Category $category): static
+    public function addCategory(Category $category): self
     {
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
+            $category->addBook($this); // Ajout de la relation bidirectionnelle
         }
 
         return $this;
     }
 
-    public function removeCategory(Category $category): static
+    public function removeCategory(Category $category): self
     {
-        $this->categories->removeElement($category);
+        if ($this->categories->removeElement($category)) {
+            $category->removeBook($this); // Suppression de la relation bidirectionnelle
+        }
 
         return $this;
     }

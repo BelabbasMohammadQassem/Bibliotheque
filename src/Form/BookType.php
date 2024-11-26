@@ -7,6 +7,7 @@ use App\Entity\Book;
 use App\Entity\Category;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,17 +19,17 @@ class BookType extends AbstractType
             ->add('title')
             ->add('publicationYear')
             ->add('isbn')
-            ->add('authors', EntityType::class, [
-                'class' => Author::class,
-                'choice_label' => 'id',
-                'multiple' => true,
+            ->add('authorsString', TextType::class, [
+                'mapped' => false, // Ne pas mapper directement à l'entité
+                'required' => false,
+                'label' => 'IDs des auteurs (séparés par des virgules)'
             ])
-            ->add('categories', EntityType::class, [
-                'class' => Category::class,
-                'choice_label' => 'id',
-                'multiple' => true,
+            ->add('categoriesString', TextType::class, [
+                'mapped' => false, // Ne pas mapper directement à l'entité
+                'required' => false,
+                'label' => 'IDs des catégories (séparés par des virgules)'
             ])
-        ;
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

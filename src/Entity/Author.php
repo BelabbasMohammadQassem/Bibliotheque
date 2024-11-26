@@ -18,7 +18,7 @@ class Author
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $biography = null;
 
     #[ORM\ManyToMany(targetEntity: Book::class, mappedBy: 'authors')]
@@ -39,7 +39,7 @@ class Author
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -51,9 +51,9 @@ class Author
         return $this->biography;
     }
 
-    public function setBiography(string $biography): static
+    public function setBiography(?string $biography): self
     {
-        $this->biography = $biography;
+        $this->biography = $biography; // Accepte null ou une chaîne
 
         return $this;
     }
@@ -66,7 +66,7 @@ class Author
         return $this->books;
     }
 
-    public function addBook(Book $book): static
+    public function addBook(Book $book): self
     {
         if (!$this->books->contains($book)) {
             $this->books->add($book);
@@ -76,12 +76,18 @@ class Author
         return $this;
     }
 
-    public function removeBook(Book $book): static
+    public function removeBook(Book $book): self
     {
         if ($this->books->removeElement($book)) {
             $book->removeAuthor($this);
         }
 
         return $this;
+    }
+
+    // Ajout d'une méthode toString pour faciliter l'affichage
+    public function __toString(): string
+    {
+        return $this->name ?? 'Nouvel Auteur';
     }
 }

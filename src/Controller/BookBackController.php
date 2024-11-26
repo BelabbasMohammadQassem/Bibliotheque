@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Author;
 use App\Entity\Book;
+use App\Entity\Category;
 use App\Form\BookType;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,6 +24,14 @@ final class BookBackController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: 'app_book_back_show', methods: ['GET'])]
+    public function show(Book $book): Response
+    {
+        return $this->render('book_back/show.html.twig', [
+            'book' => $book,
+        ]);
+    }
+
     #[Route('/new', name: 'app_book_back_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -30,23 +40,27 @@ final class BookBackController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Récupérer les chaînes d'auteurs et de catégories
+            $authorsString = $form->get('authorsString')->getData();
+            $categoriesString = $form->get('categoriesString')->getData();
+
+            // Traiter les chaînes d'auteurs et de catégories
+            $this->processAuthorsAndCategories($book, $authorsString, $categoriesString, $entityManager);
+
             $entityManager->persist($book);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Le livre a été ajouté avec succès.');
 
             return $this->redirectToRoute('app_book_back_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('book_back/new.html.twig', [
             'book' => $book,
-            'form' => $form,
-        ]);
-    }
+            'form' => $form->createView(),
+            'authors' => $entityManager->getRepository(Author::class)->findAll(),
+            'categories' => $entityManager->getRepository(Category::class)->findAll(),
 
-    #[Route('/{id}', name: 'app_book_back_show', methods: ['GET'])]
-    public function show(Book $book): Response
-    {
-        return $this->render('book_back/show.html.twig', [
-            'book' => $book,
         ]);
     }
 
@@ -57,7 +71,24 @@ final class BookBackController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Récupérer les chaînes d'auteurs et de catégories
+            $authorsString = $form->get('authorsString')->getData();
+            $categoriesString = $form->get('categoriesString')->getData();
+
+            // Réinitialiser les auteurs et catégories existants
+            foreach ($book->getAuthors() as $author) {
+                $book->removeAuthor($author);
+            }
+            foreach ($book->getCategories() as $category) {
+                $book->removeCategory($category);
+            }
+
+            // Traiter les chaînes d'auteurs et de catégories
+            $this->processAuthorsAndCategories($book, $authorsString, $categoriesString, $entityManager);
+
             $entityManager->flush();
+
+            $this->addFlash('success', 'Le livre a été modifié avec succès.');
 
             return $this->redirectToRoute('app_book_back_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -75,7 +106,47 @@ final class BookBackController extends AbstractController
             $entityManager->remove($book);
             $entityManager->flush();
         }
-
         return $this->redirectToRoute('app_book_back_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    // Les autres méthodes du contrôleur restent inchangées
+
+    private function processAuthorsAndCategories(Book $book, ?string $authorsString, ?string $categoriesString, EntityManagerInterface $em): void
+    {
+        // Traiter les auteurs
+        if (!empty($authorsString)) {
+            $authorNames = array_filter(array_map('trim', explode(',', $authorsString)));
+            foreach ($authorNames as $authorName) {
+                $author = $em->getRepository(Author::class)->findOneBy(['name' => $authorName]);
+                if (!$author) {
+                    $author = new Author();
+                    $author->setName($authorName);
+                    $em->persist($author);
+                }
+                
+                // Vérifier si l'auteur n'est pas déjà lié au livre
+                if (!$book->getAuthors()->contains($author)) {
+                    $book->addAuthor($author);
+                }
+            }
+        }
+
+        // Traiter les catégories
+        if (!empty($categoriesString)) {
+            $categoryNames = array_filter(array_map('trim', explode(',', $categoriesString)));
+            foreach ($categoryNames as $categoryName) {
+                $category = $em->getRepository(Category::class)->findOneBy(['name' => $categoryName]);
+                if (!$category) {
+                    $category = new Category();
+                    $category->setName($categoryName);
+                    $em->persist($category);
+                }
+                
+                // Vérifier si la catégorie n'est pas déjà liée au livre
+                if (!$book->getCategories()->contains($category)) {
+                    $book->addCategory($category);
+                }
+            }
+        }
     }
 }
