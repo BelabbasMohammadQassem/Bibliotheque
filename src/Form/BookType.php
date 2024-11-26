@@ -31,7 +31,11 @@ class BookType extends AbstractType
             ])
             ;
     }
-
+/**
+ * Configures the options for this form type.
+ *
+ * @param OptionsResolver $resolver The resolver for the options.
+ */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

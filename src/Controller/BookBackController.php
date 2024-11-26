@@ -23,15 +23,6 @@ final class BookBackController extends AbstractController
             'books' => $bookRepository->findAll(),
         ]);
     }
-
-    #[Route('/{id}', name: 'app_book_back_show', methods: ['GET'])]
-    public function show(Book $book): Response
-    {
-        return $this->render('book_back/show.html.twig', [
-            'book' => $book,
-        ]);
-    }
-
     #[Route('/new', name: 'app_book_back_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -64,6 +55,14 @@ final class BookBackController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: 'app_book_back_show', methods: ['GET'])]
+    public function show(Book $book): Response
+    {
+        return $this->render('book_back/show.html.twig', [
+            'book' => $book,
+        ]);
+    }
+
     #[Route('/{id}/edit', name: 'app_book_back_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Book $book, EntityManagerInterface $entityManager): Response
     {
@@ -71,24 +70,7 @@ final class BookBackController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Récupérer les chaînes d'auteurs et de catégories
-            $authorsString = $form->get('authorsString')->getData();
-            $categoriesString = $form->get('categoriesString')->getData();
-
-            // Réinitialiser les auteurs et catégories existants
-            foreach ($book->getAuthors() as $author) {
-                $book->removeAuthor($author);
-            }
-            foreach ($book->getCategories() as $category) {
-                $book->removeCategory($category);
-            }
-
-            // Traiter les chaînes d'auteurs et de catégories
-            $this->processAuthorsAndCategories($book, $authorsString, $categoriesString, $entityManager);
-
             $entityManager->flush();
-
-            $this->addFlash('success', 'Le livre a été modifié avec succès.');
 
             return $this->redirectToRoute('app_book_back_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -106,10 +88,9 @@ final class BookBackController extends AbstractController
             $entityManager->remove($book);
             $entityManager->flush();
         }
+
         return $this->redirectToRoute('app_book_back_index', [], Response::HTTP_SEE_OTHER);
     }
-
-    // Les autres méthodes du contrôleur restent inchangées
 
     private function processAuthorsAndCategories(Book $book, ?string $authorsString, ?string $categoriesString, EntityManagerInterface $em): void
     {

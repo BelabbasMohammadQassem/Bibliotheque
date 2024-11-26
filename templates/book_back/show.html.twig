@@ -3,36 +3,54 @@
 {% block title %}Book{% endblock %}
 
 {% block body %}
-{% if is_granted('ROLE_ADMIN') %}
+    <div class="container my-5">
+        <h1 class="mb-4">Book Details</h1>
 
-    <h1>Book</h1>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ book.id }}</td>
+                </tr>
+                <tr>
+                    <th>Title</th>
+                    <td>{{ book.title }}</td>
+                </tr>
+                <tr>
+                    <th>Publication Year</th>
+                    <td>{{ book.publicationYear }}</td>
+                </tr>
+                <tr>
+                    <th>ISBN</th>
+                    <td>{{ book.isbn }}</td>
+                </tr>
+                <tr>
+                    <th>Authors</th>
+                    <td>
+                        {% for author in book.authors %}
+                            {{ author.name }}{% if not loop.last %}, {% endif %}
+                        {% else %}
+                            No authors assigned
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Categories</th>
+                    <td>
+                        {% for category in book.categories %}
+                            {{ category.name }}{% if not loop.last %}, {% endif %}
+                        {% else %}
+                            No categories assigned
+                        {% endfor %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ book.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ book.title }}</td>
-            </tr>
-            <tr>
-                <th>PublicationYear</th>
-                <td>{{ book.publicationYear }}</td>
-            </tr>
-            <tr>
-                <th>Isbn</th>
-                <td>{{ book.isbn }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_book_back_index') }}">back to list</a>
-
-    <a href="{{ path('app_book_back_edit', {'id': book.id}) }}">edit</a>
-
-    {{ include('book_back/_delete_form.html.twig') }}
-    {% endif %}
-
+        <div class="mt-4">
+            <a href="{{ path('app_book_back_index') }}" class="btn btn-secondary me-2">Back to List</a>
+            <a href="{{ path('app_book_back_edit', {'id': book.id}) }}" class="btn btn-warning me-2">Edit</a>
+            {{ include('book_back/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

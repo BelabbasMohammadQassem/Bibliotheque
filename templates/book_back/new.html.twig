@@ -1,76 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Create New Book{% endblock %}
+{% block title %}New Book{% endblock %}
 
 {% block body %}
-{% if is_granted('ROLE_ADMIN') %}
+    <h1>Create new Book</h1>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">Create New Book</h3>
-                </div>
-                <div class="card-body">
-                    {{ form_start(form) }}
-                        <div class="mb-3">
-                            {{ form_label(form.title, 'Title', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
-                        </div>
+    {{ include('book_back/_form.html.twig') }}
 
-                        <div class="mb-3">
-                            {{ form_label(form.publicationYear, 'Publication year', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.publicationYear, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(form.isbn, 'ISBN', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.isbn, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(form.authorsString, 'Authors', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.authorsString, {'attr': {'class': 'form-control', 'placeholder': 'Enter author IDs separated by comma'}}) }}
-                            
-                            <small class="text-muted">Available Authors:</small>
-                            <div class="list-group">
-                                {% for author in authors %}
-                                    <span class="list-group-item list-group-item-action">
-                                        ID: {{ author.id }} - {{ author.name }}
-                                    </span>
-                                {% endfor %}
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(form.categoriesString, 'Categories', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.categoriesString, {'attr': {'class': 'form-control', 'placeholder': 'Enter category IDs separated by comma'}}) }}
-                            
-                            <small class="text-muted">Available Categories:</small>
-                            <div class="list-group">
-                                {% for category in categories %}
-                                    <span class="list-group-item list-group-item-action">
-                                        ID: {{ category.id }} - {{ category.name }}
-                                    </span>
-                                {% endfor %}
-                            </div>
-                        </div>
-
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary w-100">Save</button>
-                        </div>
-                    {{ form_end(form) }}
-                </div>
-                <div class="card-footer text-center">
-                    <a href="{{ path('app_book_back_index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to List
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-
+    <a href="{{ path('app_book_back_index') }}">back to list</a>
 {% endblock %}
