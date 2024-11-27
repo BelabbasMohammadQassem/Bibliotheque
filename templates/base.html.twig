@@ -16,11 +16,14 @@
                 </ul>
                 <div class="navbar-nav">
                     {% if not app.user %}
-                        <a href="{{ path('app_login') }}" class="btn btn-outline-primary me-2">Connexion</a>
-                        <a href="{{ path('app_register') }}" class="btn btn-primary">Inscription</a>
-                    {% else %}
-                        <a href="{{ path('app_logout') }}" class="btn btn-outline-danger">Déconnexion</a>
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary me-2">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-primary">Inscription</a>
+                {% else %}
+                    {% if 'ROLE_ADMIN' in app.user.roles %}
+                        <a href="{{ path('app_book_back_index') }}" class="btn btn-primary me-2">Back Office</a>
                     {% endif %}
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline-danger">Déconnexion</a>
+                {% endif %}
                 </div>
             </div>
         </div>
