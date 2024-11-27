@@ -3,9 +3,23 @@
 {% block title %}New Book{% endblock %}
 
 {% block body %}
-    <h1>Create new Book</h1>
+<div class="container my-5" style="position: relative; z-index: 1;">
+    <h1 class="text-center mb-4 text-white p-3 rounded" style="background-color: rgba(0, 0, 0, 0.4);">Create New Book</h1>
 
-    {{ include('book_back/_form.html.twig') }}
+    <div class="card shadow-lg p-4 rounded-4 border-0 bg-light">
+        <div class="card-body">
+            {{ include('book_back/_form.html.twig') }}
+        </div>
+    </div>
 
-    <a href="{{ path('app_book_back_index') }}">back to list</a>
+    <div class="d-flex justify-content-center mt-4">
+        <a href="{{ path('app_book_back_index') }}" class="btn btn-outline-dark btn-lg">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<!-- Image de fond -->
+<div class="background-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('{{ asset('images/books-1204029_1280.jpg') }}'); background-size: cover; background-position: center; z-index: -1;"></div>
+
 {% endblock %}

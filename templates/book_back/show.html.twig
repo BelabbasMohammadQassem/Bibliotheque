@@ -1,56 +1,72 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Book{% endblock %}
+{% block title %}Book Details{% endblock %}
 
 {% block body %}
-    <div class="container my-5">
-        <h1 class="mb-4">Book Details</h1>
+<div class="container my-5">
+    <h1 class="text-center mb-5">Book Details</h1>
 
-        <table class="table table-bordered">
-            <tbody>
-                <tr>
-                    <th>Id</th>
-                    <td>{{ book.id }}</td>
-                </tr>
-                <tr>
-                    <th>Title</th>
-                    <td>{{ book.title }}</td>
-                </tr>
-                <tr>
-                    <th>Publication Year</th>
-                    <td>{{ book.publicationYear }}</td>
-                </tr>
-                <tr>
-                    <th>ISBN</th>
-                    <td>{{ book.isbn }}</td>
-                </tr>
-                <tr>
-                    <th>Authors</th>
-                    <td>
-                        {% for author in book.authors %}
-                            {{ author.name }}{% if not loop.last %}, {% endif %}
-                        {% else %}
-                            No authors assigned
-                        {% endfor %}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Categories</th>
-                    <td>
-                        {% for category in book.categories %}
-                            {{ category.name }}{% if not loop.last %}, {% endif %}
-                        {% else %}
-                            No categories assigned
-                        {% endfor %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="mt-4">
-            <a href="{{ path('app_book_back_index') }}" class="btn btn-secondary me-2">Back to List</a>
-            <a href="{{ path('app_book_back_edit', {'id': book.id}) }}" class="btn btn-warning me-2">Edit</a>
-            {{ include('book_back/_delete_form.html.twig') }}
+    <div class="card shadow-sm p-4 rounded-4 border-0">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <tbody>
+                    <tr>
+                        <th class="bg-light text-secondary w-25">ID</th>
+                        <td>{{ book.id }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light text-secondary">Title</th>
+                        <td>{{ book.title }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light text-secondary">Publication Year</th>
+                        <td>{{ book.publicationYear }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light text-secondary">ISBN</th>
+                        <td>{{ book.isbn }}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light text-secondary">Authors</th>
+                        <td>
+                            {% if book.authors|length > 0 %}
+                                <ul class="list-unstyled mb-0">
+                                    {% for author in book.authors %}
+                                        <li>{{ author.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <span class="text-muted">No authors assigned</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light text-secondary">Categories</th>
+                        <td>
+                            {% if book.categories|length > 0 %}
+                                <ul class="list-unstyled mb-0">
+                                    {% for category in book.categories %}
+                                        <li>{{ category.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <span class="text-muted">No categories assigned</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <div class="d-flex justify-content-center mt-4">
+        <a href="{{ path('app_book_back_index') }}" class="btn btn-outline-primary me-2">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+        <a href="{{ path('app_book_back_edit', {'id': book.id}) }}" class="btn btn-primary me-2">
+            <i class="bi bi-pencil-square"></i> Edit
+        </a>
+        {{ include('book_back/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}
