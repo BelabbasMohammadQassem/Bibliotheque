@@ -3,6 +3,7 @@
 {% block title %}Book Details{% endblock %}
 
 {% block body %}
+{% if is_granted('ROLE_ADMIN') %}
 <div class="container my-5">
     <h1 class="text-center mb-5">Book Details</h1>
 
@@ -69,4 +70,5 @@
         {{ include('book_back/_delete_form.html.twig') }}
     </div>
 </div>
+{% endif %}
 {% endblock %}

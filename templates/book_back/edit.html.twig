@@ -3,6 +3,7 @@
 {% block title %}Edit Book{% endblock %}
 
 {% block body %}
+{% if is_granted('ROLE_ADMIN') %}
 <div class="container my-5">
     <h1 class="text-center mb-4 text-white p-3 rounded" style="background-color: rgba(0, 0, 0, 0.4);">Edit Book</h1>
 
@@ -18,4 +19,5 @@
         {{ include('book_back/_delete_form.html.twig', {'attr': {'class': 'd-inline-block'}}) }}
     </div>
 </div>
+{% endif %}
 {% endblock %}

@@ -3,6 +3,8 @@
 {% block title %}Book Index{% endblock %}
 
 {% block body %}
+{% if is_granted('ROLE_ADMIN') %}
+
 <div class="container my-5">
     <h1 class="text-center mb-4">Book Index</h1>
 
@@ -46,4 +48,5 @@
         <a href="{{ path('app_book_back_new') }}" class="btn btn-success">Create New Book</a>
     </div>
 </div>
+{% endif %}
 {% endblock %}
