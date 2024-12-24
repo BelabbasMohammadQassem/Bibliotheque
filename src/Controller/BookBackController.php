@@ -107,37 +107,57 @@ final class BookBackController extends AbstractController
 
     private function processAuthorsAndCategories(Book $book, ?string $authorsString, ?string $categoriesString, EntityManagerInterface $em): void
     {
-        // Traiter les auteurs
+        // Traitement des auteurs
+        // Vérifie si une chaîne d'auteurs est fournie
         if (!empty($authorsString)) {
+            // Divise la chaîne en un tableau, supprime les espaces superflus et filtre les entrées vides
             $authorNames = array_filter(array_map('trim', explode(',', $authorsString)));
+            
+            // Parcourt chaque nom d'auteur
             foreach ($authorNames as $authorName) {
+                // Recherche si l'auteur existe déjà en base de données
                 $author = $em->getRepository(Author::class)->findOneBy(['name' => $authorName]);
+                
+                // Si l'auteur n'existe pas, en crée un nouveau
                 if (!$author) {
                     $author = new Author();
                     $author->setName($authorName);
+                    // Prépare la persistance du nouvel auteur en base de données
                     $em->persist($author);
                 }
                 
-                // Vérifier si l'auteur n'est pas déjà lié au livre
+                // Vérifie si l'auteur n'est pas déjà associé au livre
+                // Cela évite les doublons dans la relation
                 if (!$book->getAuthors()->contains($author)) {
+                    // Ajoute l'auteur au livre
                     $book->addAuthor($author);
                 }
             }
         }
-
-        // Traiter les catégories
+    
+        // Traitement des catégories 
+        // Logique similaire au traitement des auteurs
         if (!empty($categoriesString)) {
+            // Divise la chaîne en un tableau, supprime les espaces superflus et filtre les entrées vides
             $categoryNames = array_filter(array_map('trim', explode(',', $categoriesString)));
+            
+            // Parcourt chaque nom de catégorie
             foreach ($categoryNames as $categoryName) {
+                // Recherche si la catégorie existe déjà en base de données
                 $category = $em->getRepository(Category::class)->findOneBy(['name' => $categoryName]);
+                
+                // Si la catégorie n'existe pas, en crée une nouvelle
                 if (!$category) {
                     $category = new Category();
                     $category->setName($categoryName);
+                    // Prépare la persistance de la nouvelle catégorie en base de données
                     $em->persist($category);
                 }
                 
-                // Vérifier si la catégorie n'est pas déjà liée au livre
+                // Vérifie si la catégorie n'est pas déjà associée au livre
+                // Cela évite les doublons dans la relation
                 if (!$book->getCategories()->contains($category)) {
+                    // Ajoute la catégorie au livre
                     $book->addCategory($category);
                 }
             }
