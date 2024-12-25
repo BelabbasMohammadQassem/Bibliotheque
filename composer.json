@@ -60,9 +60,7 @@
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
         "post-install-cmd": [
-            "@auto-scripts",
-            "chmod +x setup.sh",
-            "./setup.sh"
+            "@auto-scripts"
         ],
         "post-update-cmd": [
             "@auto-scripts"
