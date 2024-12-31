@@ -1,4 +1,4 @@
-Bien sûr, voici le tableau en Markdown sans les deux premières routes :
+D'accord, voici le tableau en Markdown en utilisant le même type de formatage :
 
 ```markdown
 | Route      | Nom             | Méthodes  | Action                                                                |
