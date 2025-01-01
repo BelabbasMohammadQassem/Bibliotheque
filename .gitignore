@@ -15,15 +15,7 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 
-# Configuration Nginx
-/nginx/
-*.conf
-nginx_app.conf
 
-# Heroku
-Procfile
-Procfile.local
-.buildpacks
 
 # Scripts
 import-external-repo.sh
